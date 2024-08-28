@@ -5,4 +5,11 @@ const Center = styled.div`
   justify-content: center;
   align-items: flex-end ;
 `;
-export {Center}
+const AddContainer = styled.div`
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+export {Center,AddContainer}
