@@ -1,12 +1,17 @@
-
 import './App.css';
+import {LogIn} from "./pages/Auth/LogIn";
+import Header from "./components/Header";
+import {Outlet} from "react-router-dom";
 
 function App() {
-  return (
-    <div>
-      ss
-    </div>
-      );
+    return (<>
+        <Header/>
+        {/*Outlet*/}
+        <LogIn></LogIn>
+        <Outlet/>
+        {/*Footer*/}
+    </>);
+
 }
 
 export default App;
