@@ -1,6 +1,7 @@
 import {Link, Outlet} from "react-router-dom";
 import styled from "styled-components"
-import {Center} from "../../styles/stylePart";
+import {Center, AddContainer} from "../../styles/stylePart";
+
 
 export const LogIn = () => {
 
@@ -33,7 +34,7 @@ const OutletDiv = styled.div`
   border-radius: 0 0 20px 20px;
 `
 const ChangePageBtn = styled.button`
-  width: 240px;
+  width: 310px;
   height: 40px;
   border: none;
   border-radius: ${(props) => props.left ? '20px 0 0 0' : '0 20px 0 0'};
