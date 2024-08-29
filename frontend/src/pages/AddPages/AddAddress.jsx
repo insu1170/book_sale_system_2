@@ -7,11 +7,10 @@ import port from "../../utils/port";
 import {axiosPost} from "../../utils/axiosPost";
 
 export const AddAddress = () => {
-    const [postNum, postNumChangeHandle, FindPostAddress] = useInput('');
-    const [normalAdd, normalAddChangeHandle,FindNormalAddress] = useInput('');
-    const [detailAdd, detailAddChangeHandle,FindDetailAddress] = useInput('');
+    const [values, handleChange, , directInsert] = useInput({
+        postNum: '', normalAdd: '', detailAdd: ''
+    })
     const AddAddress = () => {
-        console.log('zmffl');
         let searchWindow = window.open("https://business.juso.go.kr/addrlink/addrLinkUrl.do?confmKey=devU01TX0FVVEgyMDI0MDgyMDE3MzY0NTExNTAyMjA=&returnUrl=http://localhost:3001/Address&useDetailAddr=Y", "pop", "width=570,height=420, scrollbars=yes, resizable=yes");
         if (searchWindow) {
             console.log(searchWindow, ':ss');
@@ -26,19 +25,21 @@ export const AddAddress = () => {
         const data = response.data;
         if (searchWindow) {
             searchWindow.close();
-            FindPostAddress(data.data[0])
-            FindNormalAddress(data.data[1])
-            FindDetailAddress(data.data[2])
+            directInsert('postNum', data.data[0])
+            directInsert('normalAdd', data.data[1])
+            directInsert('detailAdd', data.data[2])
         }
     }
 
 
     return (<AddContainer>
         <h1>주소 추가 창</h1>
-        <AddInputs label='우편번호:' value={postNum} onChange={postNumChangeHandle} placeholder='우편 번호를 입력하세요'
-                   buttonText='주소 찾기' onClick={AddAddress}/>
-        <AddInputs label='기본주소:' value={normalAdd} onChange={normalAddChangeHandle} placeholder='기본 주소를 입력하세요'/>
-        <AddInputs label='상세주소:' value={detailAdd} onChange={detailAddChangeHandle} placeholder='상세주소 입력'/>
+        <AddInputs label='우편번호:' value={values.postNum} onChange={handleChange} placeholder='우편 번호를 입력하세요'
+                   buttonText='주소 찾기' onClick={AddAddress} name='postNum'/>
+        <AddInputs label='기본주소:' value={values.normalAdd} onChange={handleChange} placeholder='기본 주소를 입력하세요'
+                   name='normalAdd'/>
+        <AddInputs label='상세주소:' value={values.detailAdd} onChange={handleChange} placeholder='상세주소 입력'
+                   name='detailAdd'/>
         <ButtonGroup>
             <StyledButton>등록하기</StyledButton>
         </ButtonGroup>
