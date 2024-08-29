@@ -4,20 +4,22 @@ import {useInput} from "../hooks/useInput";
 import {Link} from "react-router-dom";
 
 const Header = () => {
-    const [searchData, HandleChangeSearch] = useInput('')
+    const [search, HandleChangeSearch] = useInput({
+        searchData:''
+    })
     return (<div>
         <Container>
             <Center>
                 <HeaderTop>
-                    <div>책사줘</div>
-                    <Input type="text" value={searchData} onChange={HandleChangeSearch}/>
+                    <Link to='/main/main'><div>책 사줘! 시스템</div></Link>
+                    <Input type="text" name='searchData' value={search.searchData} onChange={HandleChangeSearch}/>
                 </HeaderTop>
             </Center>
                 <HeaderBtnDiv>
                     <Link to='/main/addcard'><HeaderBtn>카드등록</HeaderBtn></Link>
-                    <Link to='/'><HeaderBtn>주소등록</HeaderBtn></Link>
-                    <Link to='/'><HeaderBtn>책 등록</HeaderBtn></Link>
-                    <Link to='/'><HeaderBtn>mypage</HeaderBtn></Link>
+                    <Link to='/main/addAddress'><HeaderBtn>주소등록</HeaderBtn></Link>
+                    <Link to='/main/addBook'><HeaderBtn>책 등록</HeaderBtn></Link>
+                    <Link to='/'><HeaderBtn>myPage</HeaderBtn></Link>
                 </HeaderBtnDiv>
         </Container>
     </div>);
@@ -28,6 +30,7 @@ const Header = () => {
 const Container = styled.div`
   width: 60%;
   margin: 0 auto;
+  background-color: #a1c7c7;
 `;
 
 const HeaderBtnDiv = styled.div`
@@ -47,6 +50,7 @@ const HeaderTop = styled.div`
 const HeaderBtn = styled.div`
   
   &:hover {
+    transition: background-color 0.4s ease-in-out;
     background-color: aqua;
     cursor: pointer;
   }
