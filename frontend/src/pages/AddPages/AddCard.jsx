@@ -1,6 +1,7 @@
-import {useInput} from "../hooks/useInput";
+import {useInput} from "../../hooks/useInput";
 import styled from "styled-components";
-import {Center,AddContainer} from "../styles/stylePart";
+import {Center,AddContainer} from "../../styles/stylePart";
+import {AddInputs} from "../../components/Part"
 
 export const AddCard = () => {
     const [cardNum, , doubleCheck] = useInput('');
@@ -14,7 +15,6 @@ export const AddCard = () => {
             <Center>
                 <h1>카드 추가</h1>
             </Center>
-
             <Center>
                 <InputDiv>
                     <Label>카드 종류:</Label>
@@ -31,19 +31,8 @@ export const AddCard = () => {
                 </InputDiv>
             </Center>
 
-            <Center>
-                <InputDiv>
-                    <Label>카드 번호:</Label>
-                    <Input value={cardNum} onChange={doubleCheck} placeholder="0000-0000-0000-0000"/>
-                </InputDiv>
-            </Center>
-
-            <Center>
-                <InputDiv>
-                    <Label>유효기간:</Label>
-                    <Input value={cardPeriod} onChange={periodChangeHandle} placeholder="MM/YY"/>
-                </InputDiv>
-            </Center>
+        <AddInputs label = "카드 번호:" value={cardNum}  onChange={doubleCheck} placeholder='sss'></AddInputs>
+        <AddInputs label = "유효번호:" value={cardPeriod}  onChange={periodChangeHandle} placeholder='DD/YY'></AddInputs>
 
             <Center>
                 <SubmitButton>등록</SubmitButton>
@@ -65,21 +54,6 @@ const Label = styled.label`
   font-size: 20px;
   margin-bottom: 5px;
   font-weight: 600;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  height: 50px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: #9191ff;
-  }
 `;
 
 const RadioGroup = styled.div`
