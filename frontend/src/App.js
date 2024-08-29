@@ -7,7 +7,6 @@ function App() {
     return (<>
         <Header/>
         {/*Outlet*/}
-        <LogIn></LogIn>
         <Outlet/>
         {/*Footer*/}
     </>);
@@ -15,3 +14,4 @@ function App() {
 }
 
 export default App;
+
