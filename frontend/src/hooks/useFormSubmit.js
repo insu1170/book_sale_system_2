@@ -1,18 +1,17 @@
-
-import selectData from "../utils/sql/selectData";
 import insertData from "../utils/sql/insertData";
 import {useNavigate} from "react-router-dom";
+import {userPostApi} from "../apis/api/user";
 
 export function useFormSubmit(formType) {
     const navigate = useNavigate();
     const handleSubmit = async (formData) => {
-
         try {
             let result;
-            console.log('핸들 서브밑', formData,formType)
+            console.log('핸들 서브밑', formData, formType)
             if (formType === 'login') {
                 console.log('로그인중')
-                result = await selectData('user', '/select', ['userId', 'passWord'], ['userId', 'passWord'], [formData.id, formData.password])
+                // result = await selectData('user', '/select', ['userId', 'passWord'], ['userId', 'passWord'], [formData.id, formData.password])
+                const result = await userPostApi('login', {userId: formData.id, passWord: formData.password})
                 if (result.success) {
                     alert('로그인 완료')
                     navigate('/main')
@@ -22,7 +21,6 @@ export function useFormSubmit(formType) {
             } else if (formType === 'signup') {
                 console.log('가입 중')
                 if (formData.password === formData.checkPassword) {
-
                     result = await insertData('user', '/insert', ['userId', 'passWord', 'userName', 'phoneNum'], [formData.id, formData.password, formData.nickname, formData.phone]);
                     if (result.success) {
                         alert('가입 성공')
