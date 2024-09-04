@@ -6,12 +6,13 @@ const http = require("http");
 const app = express()
 app.use(bodyParser.json());
 app.use(express.json())
-app.use(express.urlencoded({ extended: true })); // 이거 있어야 함 주소 검색 결과를 받을 수 있음
+app.use(express.urlencoded({extended: true})); // 이거 있어야 함 주소 검색 결과를 받을 수 있음
 
 app.use(cors({
-    origin: 'http://localhost:3000', // 클라이언트의 주소를 지정합니다.
+    origin: 'http://localhost:3000', // 클라이언트의 주소
     credentials: true
 }));
+app.use(cors());
 
 app.post('/select', (req, res) => {
     const data = req.body;
@@ -32,6 +33,27 @@ app.post('/select', (req, res) => {
         }
     });
 });
+
+
+app.post('/returnList', (req, res) => {
+    const data = req.body;
+    connection.query(data.sql, (err, result) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({success: false, error: 'Database query error'});
+        } else {
+            if (result.length === 0) {
+                console.log('No matching records found');
+                return res.json({});
+            } else {
+                console.log('Query result:', JSON.stringify(result));
+                return res.json(result);
+            }
+        }
+    })
+
+})
+
 let clintRes = '';
 
 app.post('/address', (req, res) => {
@@ -61,9 +83,29 @@ app.post('/insert', (req, res) => {
             res.json({success: true})
         }
     })
-
-
 })
+
+
+app.post('/user/login', (req, res) => {
+    const data = req.body
+    // console.log(data, '로그인 요청이 왔어요')
+    const sql = sqlSelect('user', data, res)
+})
+
+const sqlSelect = (tableName, useValue, res) => {
+    const [findValue, attributeName, attributeValue] = useValue
+    console.log('finValue:', findValue, 'attributeName:', attributeName, 'attributeValue:', attributeValue)
+    const queryMark = attributeName.map((data) => `${data} = ?`).join(' AND ')
+    const sql = `select ${findValue} from ${tableName} where ${queryMark} `
+    connection.query(sql, attributeValue, (err, result) => {
+        if (err) {
+            console.error(err)
+            res.json(false)
+        } else {
+            res.json(result)
+        }
+    })
+}
 
 app.set('port', process.env.PORT || 3001);
 const server = http.createServer(app).listen(app.get('port'), () => {
