@@ -4,7 +4,7 @@ const Center = styled.div`
   justify-content: center;
   align-items: flex-end;
 `;
-const AddContainer = styled.form`
+const AddContainer = styled.div`
   padding: 40px;
   display: flex;
   flex-direction: column;
