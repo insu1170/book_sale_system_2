@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {userPostApi} from "../../apis/api/user";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
 export const OrderPage = () => {
     const userID = Cookies.get('id');
+    const navigate = useNavigate();
     const location = useLocation();
     const [cardData, setCardData] = useState(null);
     const [addressData, setAddressData] = useState(null);
@@ -28,7 +29,7 @@ export const OrderPage = () => {
             });
     }, [userID]);
 
-    const buy = () => {
+    const buy = async () => {
         if (selectedCardIndex === null || selectedAddressIndex === null) {
             alert("카드와 배송지를 선택해주세요.");
             return;
@@ -36,10 +37,34 @@ export const OrderPage = () => {
 
         const selectedCard = cardData[selectedCardIndex];
         const selectedAddress = addressData[selectedAddressIndex];
+        const data = location.state.data
+        console.log(data, 'ss')
+        let count = 0
+        data.forEach(data => {
+            count += data.orderCount
+        })
 
         console.log("선택된 카드 정보:", selectedCard);
         console.log("선택된 주소 정보:", selectedAddress);
-        console.log("총 결제 금액:", location.state.total);
+        console.log("총 결제 금액:", location.state.total, count);
+        const order = await userPostApi('insert', `order`, [`userID`, `orderTotal`, `totalCount`, `cardOption`, `cardPeriod`, `postNum`, `normalAdd`, `detailAdd`, `orderState`],
+            [userID, location.state.total, count, selectedCard.cardOption, selectedCard.cardPeriod, selectedAddress.postNum, selectedAddress.normalAdd, selectedAddress.detailAdd, '완료'])
+
+        console.log(order, '이것임')
+        Promise.all(
+            data.map(async (item) => {
+                await userPostApi('insert', 'orderList', ['orderTotalCount', 'orderId', 'bookId', 'orderState'], [item.orderCount, order.data.insertId, item.bookId, '완료']);
+                await userPostApi('update', 'book', [['quantity', item.bookDetails.quantity - item.orderCount]], ['bookId', item.bookDetails.bookId]);
+                await userPostApi('delete', 'cart', 'cartID', item.cartId);
+            })
+        ).then(() => {
+            console.log('모든 작업 완료');
+            navigate('/main/main');
+            window.location.reload()
+        }).catch((error) => {
+            console.error('작업 중 오류 발생:', error);
+        });
+
 
         // 결제 로직을 여기에 추가
     };
