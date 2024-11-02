@@ -5,11 +5,15 @@ import styled from "styled-components";
 import axios from "axios";
 import port from "../../utils/port";
 import {axiosPost} from "../../utils/axiosPost";
+import {userPostApi} from "../../apis/api/user";
+import Cookies from "js-cookie";
+import {useNavigate} from "react-router-dom";
 
 export const AddAddress = () => {
-    const [values, handleChange, , directInsert] = useInput({
+    const [values, handleChange, , directInsert,] = useInput({
         postNum: '', normalAdd: '', detailAdd: ''
     })
+    const navigate = useNavigate();
     const AddAddress = () => {
         let searchWindow = window.open("https://business.juso.go.kr/addrlink/addrLinkUrl.do?confmKey=devU01TX0FVVEgyMDI0MDgyMDE3MzY0NTExNTAyMjA=&returnUrl=http://localhost:3001/Address&useDetailAddr=Y", "pop", "width=570,height=420, scrollbars=yes, resizable=yes");
         if (searchWindow) {
@@ -24,12 +28,19 @@ export const AddAddress = () => {
         const data = response.data;
         if (searchWindow) {
             searchWindow.close();
+            console.log(data.data)
             directInsert('postNum', data.data[0])
             directInsert('normalAdd', data.data[1])
             directInsert('detailAdd', data.data[2])
         }
     }
-
+    const submits = async () => {
+        const addAddress = await userPostApi('insert', `address`, [`postNum`, `normalAdd`, `detailAdd`, `userId`], [values.postNum, values.normalAdd, values.detailAdd, Cookies.get('id')])
+        if (addAddress.success) {
+            alert('완료')
+            navigate('/main/main')
+        }
+    }
 
     return (<AddContainer>
         <h1>주소 추가 창</h1>
@@ -40,7 +51,7 @@ export const AddAddress = () => {
         <AddInputs label='상세주소:' value={values.detailAdd} onChange={handleChange} placeholder='상세주소 입력'
                    name='detailAdd'/>
         <ButtonGroup>
-            <StyledButton>등록하기</StyledButton>
+            <StyledButton onClick={submits}>등록하기</StyledButton>
         </ButtonGroup>
     </AddContainer>)
 }
