@@ -1,13 +1,14 @@
 import {Center} from "../styles/stylePart";
 import styled from "styled-components";
 import {useInput} from "../hooks/useInput";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import bookList from "../utils/bookList";
 import {useEffect} from "react";
 import {bookDataAtom, inputResult} from "../recoil/atoms/bookDataAtom";
 import {useSetRecoilState} from "recoil";
 
 const Header = () => {
+    const navigate = useNavigate();
     const [data, setData] = useInput({
         searchData: '', bookLists: ''
     });
@@ -25,13 +26,18 @@ const Header = () => {
         setFilterVal(e.target.value); // Recoil 전역 상태 업데이트
     };
 
+    const show = () => {
+
+    }
+
+
     return (
         <div>
             <Container>
                 <Center>
                     <HeaderTop>
                         <Link to='/main/main'>
-                            <div>책 사줘! 시스템</div>
+                            <HeaderBtnDiv>책 사줘! 시스템</HeaderBtnDiv>
                         </Link>
                         <Input
                             type="text"
@@ -39,6 +45,12 @@ const Header = () => {
                             value={data.searchData}
                             onChange={handleInputChange} // 함수로 설정
                         />
+                        <div style={{display: 'flex'}}>
+                            <HeaderBtn onClick={() => {
+                                navigate('/main/cart')
+                            }}>장바구니</HeaderBtn>|
+                            <HeaderBtn> 로그아웃</HeaderBtn>
+                        </div>
                     </HeaderTop>
                 </Center>
                 <HeaderBtnDiv>
@@ -76,11 +88,13 @@ const HeaderTop = styled.div`
 
 const HeaderBtn = styled.div`
   &:hover {
+    transform: scale(1.05);
     transition: background-color 0.4s ease-in-out;
     background-color: aqua;
     cursor: pointer;
   }
 `;
+
 
 const Input = styled.input`
   width: calc(60% - 50px);
