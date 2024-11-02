@@ -13,8 +13,7 @@ export const AddAddress = () => {
     const AddAddress = () => {
         let searchWindow = window.open("https://business.juso.go.kr/addrlink/addrLinkUrl.do?confmKey=devU01TX0FVVEgyMDI0MDgyMDE3MzY0NTExNTAyMjA=&returnUrl=http://localhost:3001/Address&useDetailAddr=Y", "pop", "width=570,height=420, scrollbars=yes, resizable=yes");
         if (searchWindow) {
-            console.log(searchWindow, ':ss');
-            clintReq(searchWindow);
+            clintReq(searchWindow)
         } else {
             alert('검색창을 열수 없습니다');
         }

@@ -4,43 +4,33 @@ import selectData from "../../utils/sql/selectData";
 import {useInput} from "../../hooks/useInput";
 import {useFormSubmit} from "../../hooks/useFormSubmit";
 import {AddInputs} from "../../components/Part";
-import {AddContainer} from "../../styles/stylePart";
+import {LoginContainer} from "../../styles/stylePart";
+import {userPostApi} from "../../apis/api/user";
 
 export const SignUpPage = () => {
     const {handleSubmit} = useFormSubmit('signup')
-    // const [inputIdValue, ChangeIdHandle] = useInput('')
-    // const [inputNameValue, ChangeNameHandle] = useInput('')
-    // const [inputPWValue, ChangePWHandle] = useInput('')
-    // const [inputPWCValue, ChangePWCHandle] = useInput('')
-    // const [inputPHONEValue, ChangePHONEHandle] = useInput('')
-    // const [idCheck, setIdCheck] = useState(false)
 
-    const [inputValue, ChangeHandle,,directInsert] = useInput({
+    const [inputValue, ChangeHandle, , directInsert] = useInput({
         inputIdValue: '', inputNameValue: '', inputPWValue: '', inputPWCValue: '', inputPHONEValue: '', idCheck: false
     })
 
     const checkID = async () => {
         console.log('id:', inputValue.inputIdValue);
         const data = await selectData('user', '/select', ['userId'], ['userId'], [inputValue.inputIdValue]);
-        directInsert('idCheck',data['success']);
+        directInsert('idCheck', data['success']);
         console.log(inputValue.idCheck);
         alert(data['success'] ? '사용중 ID' : '사용가능');
     };
 
     const signUp = async () => {
-        const data = await handleSubmit({
-            id: inputValue.inputIdValue,
-            password: inputValue.inputPWValue,
-            name: inputValue.inputNameValue,
-            checkPassword: inputValue.inputPWCValue,
-            phone: inputValue.inputPHONEValue
-        });
+        const data = await userPostApi('insert', ['user'], ['userId', 'passWord', 'userName', 'phoneNum'], [inputValue.inputIdValue, inputValue.inputPWValue, inputValue.inputNameValue, inputValue.inputPHONEValue]
+        );
         console.log(data)
     }
 
 
     return (<div>
-        <AddContainer>
+        <LoginContainer>
             <Title>회원가입 창</Title>
             <form>
                 <AddInputs label='아이디 입력' value={inputValue.inputIdValue} placeholder='아이디를 입력하세요' name='inputIdValue'
@@ -56,7 +46,7 @@ export const SignUpPage = () => {
                            name='inputPHONEValue' onChange={ChangeHandle}/>
             </form>
             <StyledButton onClick={signUp}> 가입완료</StyledButton>
-        </AddContainer>
+        </LoginContainer>
     </div>);
 
 };

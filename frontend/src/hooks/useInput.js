@@ -14,17 +14,14 @@ export function useInput(initialValues) {
             ...prevValues, [name]: value
         }));
     };
-
     // 카드번호 중복 확인 핸들러
     const doubleCheck = async (e) => {
-        console.log(e.nativeEvent.data)
         const {name, value} = e.target;
         setValues(prevValues => ({
             ...prevValues, [name]: value
         }));
         if (name === 'cardNum' && value.length >= 16) {
             const check = await selectData('card', '/select', ['cardNum'], ['cardNum'], [value]);
-            console.log('check:', check);
             if (check.success) {
                 alert(`카드번호 ${value}는 사용할 수 없습니다`);
             } else {
@@ -44,7 +41,6 @@ export function useInput(initialValues) {
                 }));
 
             } else {
-
                 setValues(prevValues => ({
                     ...prevValues, ['doubleCheck']: '사용가능'
                 }));

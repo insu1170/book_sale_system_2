@@ -6,7 +6,7 @@ import {userPostApi} from "../apis/api/user";
 import {bookDataAtom} from "../recoil/atoms/bookDataAtom";
 import {useNavigate} from "react-router-dom";
 
-export const CartPage = ({onUpdate}) => {
+export const CartPage = () => {
     const bookList = useRecoilValue(bookDataAtom);
     const [cartData, setCartData] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0)
@@ -44,7 +44,6 @@ export const CartPage = ({onUpdate}) => {
     }, [bookList]);
 
     const cartDelete = async (data, index) => { // 취소 눌렸을 때 장바구니 제거
-        console.log(data, index, '계산')
         const del = await userPostApi('delete', 'cart', 'cartID', data.cartId);
         console.log(del, "del");
 
@@ -53,7 +52,6 @@ export const CartPage = ({onUpdate}) => {
             const updatedCartData = [...cartData];     // 새로운 배열을 생성하여 상태 업데이트
             updatedCartData.splice(index, 1); // index 위치에서 1개의 요소 제거
             setCartData(updatedCartData); // 새로운 배열로 상태 업데이트
-            console.log(updatedCartData);
         }
     };
 
@@ -76,7 +74,6 @@ export const CartPage = ({onUpdate}) => {
                 window.location.reload() // 강제 재 랜더링
             }
         }
-        console.log(data, index)
     }
 
     return (

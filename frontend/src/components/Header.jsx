@@ -6,6 +6,7 @@ import bookList from "../utils/bookList";
 import {useEffect} from "react";
 import {bookDataAtom, inputResult} from "../recoil/atoms/bookDataAtom";
 import {useSetRecoilState} from "recoil";
+import Cookies from "js-cookie";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -26,10 +27,10 @@ const Header = () => {
         setFilterVal(e.target.value); // Recoil 전역 상태 업데이트
     };
 
-    const show = () => {
-
+    const logout = () => {
+        Cookies.remove('id');
+        navigate('/')
     }
-
 
     return (
         <div>
@@ -49,7 +50,7 @@ const Header = () => {
                             <HeaderBtn onClick={() => {
                                 navigate('/main/cart')
                             }}>장바구니</HeaderBtn>|
-                            <HeaderBtn> 로그아웃</HeaderBtn>
+                            <HeaderBtn onClick={logout}> 로그아웃</HeaderBtn>
                         </div>
                     </HeaderTop>
                 </Center>
@@ -57,7 +58,7 @@ const Header = () => {
                     <Link to='/main/addcard'><HeaderBtn>카드등록</HeaderBtn></Link>
                     <Link to='/main/addAddress'><HeaderBtn>주소등록</HeaderBtn></Link>
                     <Link to='/main/addBook'><HeaderBtn>책 등록</HeaderBtn></Link>
-                    <Link to='/'><HeaderBtn>myPage</HeaderBtn></Link>
+                    <Link to='/main/myPage'><HeaderBtn>myPage</HeaderBtn></Link>
                 </HeaderBtnDiv>
             </Container>
         </div>
