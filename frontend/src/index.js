@@ -10,6 +10,10 @@ import {AddAddress} from "./pages/AddPages/AddAddress";
 import {AddBook} from "./pages/AddPages/AddBook";
 import {Main} from "./pages/Main";
 import {RecoilRoot} from "recoil";
+import {DetailPage} from "./pages/DetailPage";
+import {CartPage} from "./pages/CartPage";
+import {OrderPage} from "./pages/Auth/OrderPage";
+import {MyPage} from "./pages/MyPage";
 
 const router = createBrowserRouter([
     {
@@ -28,7 +32,11 @@ const router = createBrowserRouter([
             {path: "addcard", element: <AddCard/>},
             {path: "addAddress", element: <AddAddress/>},
             {path: "addBook", element: <AddBook/>},
-            {path: "main", element: <Main/>}
+            {path: "main", element: <Main/>},
+            {path: "detail", element: <DetailPage/>},
+            {path: "cart", element: <CartPage/>},
+            {path: "order", element: <OrderPage/>},
+            {path: "myPage", element: <MyPage/>}
         ]
     }
 ]);
