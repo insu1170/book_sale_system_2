@@ -45,13 +45,14 @@ export const CartPage = () => {
 
     const cartDelete = async (data, index) => { // 취소 눌렸을 때 장바구니 제거
         const del = await userPostApi('delete', 'cart', 'cartID', data.cartId);
-        console.log(del, "del");
+        console.log(del.data, "del");
 
-        if (del.data && data.success) { // 카트에서 제거 했을 때
+        if (del.data) { // 카트에서 제거 했을 때
             setTotalMoney(totalMoney - data.bookDetails.price * data.orderCount)
             const updatedCartData = [...cartData];     // 새로운 배열을 생성하여 상태 업데이트
             updatedCartData.splice(index, 1); // index 위치에서 1개의 요소 제거
             setCartData(updatedCartData); // 새로운 배열로 상태 업데이트
+
         }
     };
 
