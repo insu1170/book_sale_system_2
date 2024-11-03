@@ -1,13 +1,15 @@
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {AddContainer} from "../styles/stylePart";
 import styled from "styled-components";
 import {useState} from "react";
+import Cookies from "js-cookie";
+import {userPostApi} from "../apis/api/user";
 
 export const DetailPage = (props) => {
-
+    const navigate = useNavigate();
     const [state, setState] = useState(0);
     const location = useLocation();
-    const {bookData} = location.state || {}; // 전달된 데이터 가져오기
+    let {bookData} = location.state || {}; // 전달된 데이터 가져오기
     console.log(bookData);
 
     const addToCart = () => {
@@ -21,6 +23,22 @@ export const DetailPage = (props) => {
         setState(count)
         console.log(count, state)
     };
+
+    const cartIn = async () => {
+        const addCart = await userPostApi('insert', `cart`, [`bookId`, `userId`, `orderCount`], [bookData.bookId, Cookies.get('id'), state]) // 장바구니 추가
+        console.log(addCart, 'dhkfy')
+        if (addCart.success) {
+            alert('추가완료')
+            navigate('/main/main')
+
+        }
+    }
+    const directOrder = async () => {
+        bookData = {...bookData, count: state}
+        console.log(bookData, '확인')
+
+        navigate('/main/order', {state: {data: bookData, total: bookData.price * state, req: 'direct'}})
+    }
 
     return (
         <div style={{textAlign: "center", marginTop: "60px"}}>
@@ -43,8 +61,8 @@ export const DetailPage = (props) => {
                             <AddToCartButton onClick={addToCart}>{state > 0 ? '수량변경' : '구매하기'}</AddToCartButton>
                             {state > 0 ?
                                 <div>
-                                    <AddToCartButton>{state}개 바로 구매하기</AddToCartButton>
-                                    <AddToCartButton>{state}개 장바구니 담기</AddToCartButton>
+                                    <AddToCartButton onClick={directOrder}>{state}개 바로 구매하기</AddToCartButton>
+                                    <AddToCartButton onClick={cartIn}>{state}개 장바구니 담기</AddToCartButton>
                                 </div> : ""
                             }
                         </StyledBookInfo>

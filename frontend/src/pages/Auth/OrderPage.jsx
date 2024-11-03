@@ -14,6 +14,7 @@ export const OrderPage = () => {
     const [selectedAddressIndex, setSelectedAddressIndex] = useState(null);
 
     useEffect(() => {
+
         Promise.all([
             userPostApi('card', ['*'], ['userId'], [userID]),
             userPostApi('address', ['*'], ['userId'], [userID])
@@ -38,33 +39,48 @@ export const OrderPage = () => {
         const selectedCard = cardData[selectedCardIndex];
         const selectedAddress = addressData[selectedAddressIndex];
         const data = location.state.data
-        console.log(data, 'ss')
-        let count = 0
-        data.forEach(data => {
-            count += data.orderCount
-        })
-
         console.log("선택된 카드 정보:", selectedCard);
         console.log("선택된 주소 정보:", selectedAddress);
-        console.log("총 결제 금액:", location.state.total, count);
-        const order = await userPostApi('insert', `order`, [`userID`, `orderTotal`, `totalCount`, `cardOption`, `cardPeriod`, `postNum`, `normalAdd`, `detailAdd`, `orderState`],
-            [userID, location.state.total, count, selectedCard.cardOption, selectedCard.cardPeriod, selectedAddress.postNum, selectedAddress.normalAdd, selectedAddress.detailAdd, '완료'])
-
-        console.log(order, '이것임')
-        Promise.all(
-            data.map(async (item) => {
-                await userPostApi('insert', 'orderList', ['orderTotalCount', 'orderId', 'bookId', 'orderState'], [item.orderCount, order.data.insertId, item.bookId, '완료']);
-                await userPostApi('update', 'book', [['quantity', item.bookDetails.quantity - item.orderCount]], ['bookId', item.bookDetails.bookId]);
-                await userPostApi('delete', 'cart', 'cartID', item.cartId);
-            })
-        ).then(() => {
+        console.log("총 결제 금액:", location.state.total);
+        console.log(location.state, '총 정보')
+        if (location.state.req === "direct") {
+            console.log('바로주문')
+            const order = await userPostApi('insert', `order`, [`userID`, `orderTotal`, `totalCount`, `cardOption`, `cardPeriod`, `postNum`, `normalAdd`, `detailAdd`, `orderState`],
+                [userID, location.state.total, location.state.data.count, selectedCard.cardOption, selectedCard.cardPeriod, selectedAddress.postNum, selectedAddress.normalAdd, selectedAddress.detailAdd, '완료'])
+            console.log(order, '바로주문')
+            await Promise.all([
+                userPostApi('insert', 'orderList', ['orderTotalCount', 'orderId', 'bookId', 'orderState'], [location.state.data.count, order.data.insertId, location.state.data.bookId, '완료']),
+                userPostApi('update', 'book', [['quantity', location.state.data.quantity - location.state.data.count]], ['bookId', location.state.data.bookId])
+            ]);
             console.log('모든 작업 완료');
             navigate('/main/main');
-            window.location.reload()
-        }).catch((error) => {
-            console.error('작업 중 오류 발생:', error);
-        });
+        } else {
 
+            console.log(data, 'ss')
+            let count = 0
+            data.forEach(data => {
+                count += data.orderCount
+            })
+
+
+            const order = await userPostApi('insert', `order`, [`userID`, `orderTotal`, `totalCount`, `cardOption`, `cardPeriod`, `postNum`, `normalAdd`, `detailAdd`, `orderState`],
+                [userID, location.state.total, count, selectedCard.cardOption, selectedCard.cardPeriod, selectedAddress.postNum, selectedAddress.normalAdd, selectedAddress.detailAdd, '완료'])
+            console.log(order, '이것임')
+
+            Promise.all(
+                data.map(async (item) => {
+                    await userPostApi('insert', 'orderList', ['orderTotalCount', 'orderId', 'bookId', 'orderState'], [item.orderCount, order.data.insertId, item.bookId, '완료']);
+                    await userPostApi('update', 'book', [['quantity', item.bookDetails.quantity - item.orderCount]], ['bookId', item.bookDetails.bookId]);
+                    await userPostApi('delete', 'cart', 'cartID', item.cartId);
+                })
+            ).then(() => {
+                console.log('모든 작업 완료');
+                navigate('/main/main');
+                // window.location.reload()
+            }).catch((error) => {
+                console.error('작업 중 오류 발생:', error);
+            });
+        }
 
         // 결제 로직을 여기에 추가
     };
